@@ -1,0 +1,39 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © funwithpinescript
+
+//@version=4
+study("200 EAM strategy", overlay=true)
+
+ema200 = ema(close, 200)
+//plot the 200 ema
+plot(ema200, linewidth=6)
+
+//we need to identify pullback and express in code
+
+//step 1 - define Red and Green candles
+greenCandle = close > open
+redCandle = close < open
+
+//add the wicks
+greenBottom = greenCandle and low < open
+redTop = redCandle and high > open
+
+//detect the patterns
+
+//pattern for above ema200
+closePatternAbove = redTop and greenCandle[1] and (close > ema200) and high > high[1]
+buyPattern = greenBottom and redCandle[1] and (close > ema200) and low < low[1]
+
+//pattern for below ema200
+closePatternBelow = redTop and greenCandle[1] and (close < ema200) and high > high[1]
+sellPattern = greenBottom and redCandle[1] and (close < ema200) and low < low[1]
+
+
+//get it on chart
+//above ema200
+plotshape(buyPattern, title="lowest candle", location=location.belowbar, color=color.green, text="buy", textcolor=color.green, style=shape.triangleup, size="20")
+plotshape(closePatternAbove, title="highest candle", location=location.abovebar, color=color.red, text="close", textcolor=color.red, style=shape.arrowdown, size="20")
+
+//below ema200
+plotshape(sellPattern, title="highest candle", location=location.abovebar, color=color.red, text="sell", textcolor=color.red, style=shape.triangledown, size="20")
+plotshape(closePatternBelow, title="lowest candle", location=location.belowbar, color=color.green, text="close", textcolor=color.green, style=shape.arrowup, size="20")
