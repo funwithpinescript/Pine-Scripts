@@ -1,0 +1,41 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+
+// © funwithpinescript
+
+// system description: https://www.youtube.com/watch?v=jbsruL-zy7M
+
+// Killer Parabolic SAR Strategy | TRIPLE CONFIRMATION | Forex Scalping 2020
+//@version=4
+study("Tripple Conf SAR", overlay=true)
+ma10 = sma(close, 10)
+ma20 = sma(close, 20)
+ma200 = sma(close, 200)
+
+psar = sar(0.02, 0.02, 0.2)
+
+// plot(psar, color=color.green, linewidth=3, style=plot.style_circles)
+
+plot(ma10, color=color.yellow, linewidth=2)
+plot(ma20, color=color.red, linewidth=2)
+plot(ma200, color=color.purple, linewidth=2)
+
+//define rsi
+mrsi = rsi(close, 14)
+
+buySignal = ma20 > ma200 and (crossover(ma10, ma20)) and (ma20 > psar) and mrsi > 52
+sellSignal = ma20 < ma200 and (crossunder(ma10, ma20)) and (ma20 < psar) and mrsi < 48
+
+//alternative conditions - without rsi
+// buySignal = ma20 > ma200 and (crossover(ma10, ma20)) and (ma20 > psar)
+// sellSignal = ma20 < ma200 and (crossunder(ma10, ma20)) and (ma20 < psar)
+
+plotshape(buySignal, title="long entry", location=location.belowbar, color=color.green, text="buy", style=shape.triangleup, size="10")
+plotshape(sellSignal, title="short entry", location=location.abovebar, color=color.red, text="sell", style=shape.triangledown, size="10")
+
+//adding closing signals
+closeSell = ma20 < ma200 and crossover(mrsi, 30)
+closeBuy = ma20 > ma200 and crossunder(mrsi, 70)
+
+//apply these to chart
+plotshape(closeSell, title="close sell ", location=location.belowbar, color=color.blue, text="close sell", style=shape.arrowup, size="10")
+plotshape(closeBuy, title="close buy ", location=location.abovebar, color=color.blue, text="close buy", style=shape.arrowdown, size="10")
