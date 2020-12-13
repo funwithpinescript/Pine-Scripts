@@ -1,0 +1,52 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © funwithpinescript
+//Double Stochastic Forex Trading Strategy
+// https://www.youtube.com/watch?v=TLfNceC__Wg
+
+//system has a potential(been tested) on 15min to 1hr
+
+//@version=4
+study("Double Stochastic Forex", overlay=true, format = format.price, precision = 2)
+
+//inputs for slower stochastic
+//Inputs
+slow_periodK = input(21, title="slow K", minval=1)
+slow_periodD = input(4, title="slow D", minval=1)
+slow_smooth = input(10, title="slow smooth", minval=1)
+
+fast_periodK = input(5, title="fast K", minval=1)
+fast_periodD = input(2, title="fast D", minval=1)
+fast_smooth = input(2, title="fast smooth", minval=1)
+
+upper_limit = input(defval=60, title="upper limit for slow stoch", minval=50, step=1)
+lower_limit = input(defval=40, title="lower limit for slow stoch", maxval=50, step=1)
+
+EMA = input(20, title="EMA", minval=1)
+
+//20 day period EMA
+ema20 = ema(close, EMA)
+//add it to the chart
+plot(ema20, color=color.purple, linewidth=3)
+
+//initiate fast and slow stochastic
+fast_stochastic = stoch(close, highest(fast_periodK), lowest(fast_periodD), fast_smooth)
+slow_stochastic = stoch(close, highest(slow_periodK), lowest(slow_periodD), slow_smooth)
+
+//to detect overbought and oversold we use limits - upper - 80, lower - 20
+//fast
+fast_overbought = fast_stochastic[1] > 80 and fast_stochastic <= 80 //tweek
+fast_oversold = fast_stochastic[1] < 20 and fast_stochastic >= 20 //tweak
+
+//slow
+slow_overbought = slow_stochastic > upper_limit //tweak
+slow_oversold = slow_stochastic < lower_limit //tweak
+
+//plot buy signal
+buy_entry = open < ema20 and close > ema20 and fast_oversold and slow_overbought and close > open//this last condition defines green candle
+plotshape(buy_entry, text="buy", color = color.green, style = shape.triangleup, size = size.small, location = location.belowbar, title = "buy entry")
+
+//plot sell signal
+sell_entry = open > ema20 and close < ema20 and fast_overbought and slow_oversold and close < open //last condition defines red candle
+plotshape(sell_entry, text="sell", color = color.red, style = shape.triangledown, size = size.small, location = location.abovebar, title = "sell entry")
+
+
