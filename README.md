@@ -6,4 +6,4 @@
 
 * ### killer system *tripple_conf_with_SAR.pine: https://www.youtube.com/watch?v=jbsruL-zy7M*
 
-* ### double stochastic *system with 20 EMA: * 
+* ### double stochastic *system with 20 EMA: https://youtu.be/nFHw3p4KzRs* 
