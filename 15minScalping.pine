@@ -1,0 +1,66 @@
+//https://www.youtube.com/watch?v=eGIKWhiOpYQ
+
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © funwithpinescript
+
+//based on 2 indicators:
+// 200EMA
+//Stochastic (%K = 5, %D = 3. method: SMA)
+
+//rules - price is above 200EMA - look for buying opportunities, price is below 200EMA - look for selling opportunities
+//sell buy when stochastic is in oversold teritory(<20) and sell when stochastic is in overbought territory(>80);
+
+//TP - only 5-10 pips;
+
+//@version=4
+study("15 min scalping", overlay=true)
+//declare inputs
+EMA = input(200, title="EMA", minval = 20, step = 1)
+
+//https://www.tradingview.com/support/solutions/43000502332-stochastic-stoch/ - how to use stochastic resource
+periodK = input(5, title="slow K", minval=1)
+periodD = input(3, title="slow D", minval=1)
+length = input(5, title="length", minval=1)
+
+
+//declare 200 ema
+ema = ema(close, EMA)
+plot(ema)
+
+//https://www.nuomiphp.com/eplan/en/139760.html - resources on how to build stochastic
+//building stochastic
+stc = stoch (close, high, low, length)
+K = sma (stc, periodK)
+D = sma (stc, periodD)
+//plot stochastic
+// plot (D, title  ="%D", color = color.blue, linewidth=1)
+// plot (K, title  ="%K", color = color.red, linewidth=1)
+// //plot the lines
+// hline(80, title = "Upper Limit", color = color.red, linestyle =  hline.style_dotted, linewidth=2)
+// hline(20, title = "Lower Limit", color = color.lime, linestyle =  hline.style_dotted, linewidth=2)
+
+//let's modify buy and sell signals - I'll modify it and will trigger buy when stochastic comes up from oversold, and will trigger sell - when stochastic comes down from overbought
+
+//buy signal
+buy_entry = close > ema and D <= 20 and crossover(D, K)
+plotshape(buy_entry, text="buy", color = color.green, style = shape.triangleup, size = size.small, location = location.belowbar, title = "buy entry")
+
+//sell signal
+sell_entry = close < ema and D >= 80 and crossunder(D, K)
+plotshape(sell_entry, text="sell", color = color.red, style = shape.triangledown, size = size.small, location = location.abovebar, title = "sell entry")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

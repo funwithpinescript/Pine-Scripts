@@ -3,6 +3,9 @@
 //Double Stochastic Forex Trading Strategy
 // https://www.youtube.com/watch?v=TLfNceC__Wg
 
+//code on github: 
+// https://github.com/funwithpinescript/Pine-Scripts/blob/main/double_stochastic_system.pine
+
 //system has a potential(been tested) on 15min to 1hr
 
 //@version=4
