@@ -1,0 +1,49 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © funwithpinescript
+
+//video that inspired this code: https://www.youtube.com/watch?v=R7cXkvztdKY
+
+//@version=4
+study("Hammer pattern", overlay=true)
+//define inputs
+fibBodyLevel = input(defval=0.333, title="body", type=input.float, step=0.001)
+wickLengthLevel = input(defval=0.6, title="wick", type=input.float, step=0.001)
+
+//should body of following green candle be engulfing
+is_engulf_candle = input(title="is following candle engulfing?", type=input.bool, defval=false)
+
+//inputs for ema
+ema_len = input(title="EMA length", type=input.integer, defval=50)
+higher_time_frame = input(title="access higher timeframe EMA", type=input.bool, defval=false)
+res = input(title="EMA timeframe", type=input.resolution, defval="60")//default - 1hrs
+
+//according to video the Hammer can be red or green as long as candle on left is red and candle on right is green
+
+//define green candle and red candle
+green_candle = close > open
+red_candle = close < open
+
+//define hammer candle based on fiblevel
+fib = (high - low) * fibBodyLevel
+wick = (high - low) * wickLengthLevel
+hammer_red_candle = red_candle and (open - close) <= fib and (close - low) >= wick
+hammer_green_candle = green_candle and (close - open) <= fib and (open - low) >= wick
+
+engulfing_green_candle = (close > open) and ((close - open) > (red_candle[1] ? open[1] - close[1] : close[1] - open[1]))
+
+//hammer_pattern we are looking for here: left candle is red, right candle is green, middle (hammer candle) is having body which is fib level and wick is bigger than body
+hammer_pattern = is_engulf_candle ? (hammer_red_candle[1] or hammer_green_candle[1]) and red_candle[2] and green_candle and (low[1] < low[2]) and (low[1] < low) and engulfing_green_candle : (hammer_red_candle[1] or hammer_green_candle[1]) and red_candle[2] and green_candle and (low[1] < low[2]) and (low[1] < low) 
+
+plotshape(hammer_pattern, style=shape.triangleup, color=color.green, location=location.belowbar, size=size.small, text="buy", offset=-1)
+
+//define 50 ema
+EMA = ema(close, ema_len)
+ema_smooth=security(syminfo.tickerid, res, EMA, barmerge.gaps_on, barmerge.lookahead_on)//barmerge.gaps_on - will merge any gaps on the chart
+ema_to_plot = higher_time_frame ? ema_smooth : EMA
+plot(ema_to_plot, linewidth=3, color=close>ema_to_plot ? color.green : color.red)
+
+//lesson from: https://zenandtheartoftrading.com/pinescript/higher-timeframe-ema/
+
+
+
+
