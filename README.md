@@ -9,3 +9,6 @@
 * ### double stochastic *system with 20 EMA: https://youtu.be/nFHw3p4KzRs* 
 
 * ### 15 min *scapling system: https://youtu.be/niYn-ngNYSw* 
+
+* ### Hammer Pattern with EMA: https://youtu.be/DYfTV2oqVuY*
+
