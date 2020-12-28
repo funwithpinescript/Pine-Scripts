@@ -10,5 +10,5 @@
 
 * ### 15 min *scapling system: https://youtu.be/niYn-ngNYSw* 
 
-* ### *Hammer Pattern with EMA: https://youtu.be/DYfTV2oqVuY*
+* ### Hammer Pattern with *flexible EMA: https://youtu.be/DYfTV2oqVuY*
 
